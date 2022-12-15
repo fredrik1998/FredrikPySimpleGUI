@@ -31,7 +31,8 @@ def edit_phone_number_by_name(name, phone_number):
 def retrieve_contacts():
     results = []
     conn = sqlite3.connect('contact_information.db')
-    cursor = conn.execute("SELECT memberid, firstname, lastname, address, postnumber, postaddress from CONTACT_INFORMATION")
+    cursor = conn.execute("SELECT memberid, firstname, lastname, address, postnumber, postaddress from "
+                          "CONTACT_INFORMATION")
     # Contact records are tuples and need to be converted into an array
     for row in cursor:
         results.append(list(row))

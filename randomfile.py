@@ -1,39 +1,29 @@
-import PySimpleGUI as sg
+class DatabaseInterface:
+    def __init__(self):
+        # Initialize database connection and cursor
+        self.conn = sqlite3.connect('contacts.db')
+        self.cursor = self.conn.cursor()
 
-# Create the search input
-search_input = sg.Text()
+    def get_all_contacts(self):
+        # Execute a SELECT query to get all rows from the contacts table
+        self.cursor.execute('SELECT * FROM contacts')
 
-# Create the search results Listbox
-search_results = sg.Listbox(values=[], size=(30, 6))
+        # Return the rows as a list of lists
+        return self.cursor.fetchall()
 
-# Create the layout
-layout = [[sg.Text('Search:')],
-          [search_input],
-          [search_results],
-          [sg.Button('Search')]]
+    def insert_contact(self, firstname, lastname, address, postnumber, postaddress):
+        # Execute an INSERT query to add a new contact to the database
+        self.cursor.execute(
+            'INSERT INTO contacts (firstname, lastname, address, postnumber, postaddress) VALUES (?, ?, ?, ?, ?)',
+            (firstname, lastname, address, postnumber, postaddress))
+        self.conn.commit()
 
-# Create the window
-window = sg.Window('Search Bar').Layout(layout)
 
-# Event loop
-while True:
-    event, values = window.Read()
+database_interface = DatabaseInterface()
 
-    # If the user clicks the search button
-    if event == 'Search':
-        search_term = values[0]
+# Use the get_all_contacts() method to get all rows from the contacts table
+rows = database_interface.get_all_contacts()
 
-        # Search for items matching the search term
-        search_results_items = []
-        for item in search_results_items:
-            if search_term in item:
-                search_results_items.append(item)
-
-        # Update the search results Listbox with the new items
-        window.FindElement('search_results').Update(search_results_items)
-
-    # If the window is closed, break out of the loop
-    if event is None:
-        break
-
-# Clean up
+# Use the insert_contact() method to add a new contact to the database
+database_interface.insert_contact(values['-FIRSTNAME-'], values['-LASTNAME-'], values['-ADDRESS-'],
+                                  values['-POSTNUMBER-'], values['-POSTADDRESS-'])
