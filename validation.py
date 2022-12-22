@@ -3,23 +3,23 @@ def validate(values):
     values_invalid = []
 
     if len(values['-FIRSTNAME-']) == 0:
-        values_invalid.append('INVALID FIRST NAME')
+        values_invalid.append('Cannot be empty')
         is_valid = False
 
     if len(values['-LASTNAME-']) == 0:
-        values_invalid.append('INVALID LAST NAME')
+        values_invalid.append('Cannot be empty')
         is_valid = False
 
     if len(values['-ADDRESS-']) == 0:
-        values_invalid.append('Invalid Address')
+        values_invalid.append('Cannot be empty')
         is_valid = False
 
     if len(values['-POSTNUMBER-']) == 0:
-        values_invalid.append('Invalid Address')
+        values_invalid.append('Cannot be empty')
         is_valid = False
 
     if len(values['-POSTADDRESS-']) == 0:
-        values_invalid.append('Invalid Address')
+        values_invalid.append('Cannot be empty')
         is_valid = False
 
     result = {"is_valid": is_valid, "values_invalid": values_invalid}

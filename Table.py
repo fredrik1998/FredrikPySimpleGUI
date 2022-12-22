@@ -10,7 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 conn = sqlite3.connect('contact_information.db')
 query = (''' CREATE TABLE CONTACT_INFORMATION
-            (MemberID INTEGER PRIMARY KEY AUTOINCREMENT,
+            (MemberID INTEGER PRIMARY KEY ,
             FIRSTNAME          TEXT    NOT NULL,
             LASTNAME       TEXT NOT NULL,
             ADDRESS    CHAR(50),

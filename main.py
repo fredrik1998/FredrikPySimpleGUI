@@ -1,7 +1,5 @@
 import PySimpleGUI as sg
 import contact_information_window
-import database_interface
-import validation
 
 layout = [[sg.Button('Show Membership List'), sg.Exit()]]
 

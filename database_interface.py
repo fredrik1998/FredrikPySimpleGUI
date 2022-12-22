@@ -1,10 +1,10 @@
 import sqlite3
 
 
-def insert_contact(firstname, lastname, address, postnumber, postaddress):
+def insert_contact(memberid, firstname, lastname, address, postnumber, postaddress):
     conn = sqlite3.connect('contact_information.db')
-    conn.execute("INSERT INTO CONTACT_INFORMATION (FIRSTNAME,LASTNAME, ADDRESS, POSTNUMBER, POSTADDRESS) \
-VALUES (?,?,?,?,?)", (firstname, lastname, address, postnumber, postaddress))
+    conn.execute("INSERT INTO CONTACT_INFORMATION (MemberID, FIRSTNAME,LASTNAME, ADDRESS, POSTNUMBER, POSTADDRESS) \
+VALUES (?,?,?,?,?,?)", (memberid, firstname, lastname, address, postnumber, postaddress))
     conn.commit()
     conn.close()
 
@@ -13,6 +13,15 @@ def delete_contact_by_name(name):
     conn = sqlite3.connect('contact_information.db')
     conn.execute("DELETE from CONTACT_INFORMATION where name = ?", (name,))
     conn.close()
+
+
+def get_all_rows():
+    rows = []
+    with sqlite3.connect('contact_information.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM CONTACT_INFORMATION")
+        rows = cursor.fetchall()
+    return rows
 
 
 def edit_address_by_name(name, address):
