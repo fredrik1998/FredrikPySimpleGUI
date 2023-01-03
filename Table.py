@@ -1,33 +1,30 @@
-import sqlite3
-
-from sqlalchemy import Column, Integer, String
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 
-# Base = declarative_base()
-# engine = create_engine('sqlite:///contact_information.db', echo=True)
+Base = declarative_base()
 
 
-conn = sqlite3.connect('contact_information.db')
-query = (''' CREATE TABLE CONTACT_INFORMATION
-            (MemberID INTEGER PRIMARY KEY ,
-            FIRSTNAME          TEXT    NOT NULL,
-            LASTNAME       TEXT NOT NULL,
-            ADDRESS    CHAR(50),
-            POSTNUMBER INT,
-            POSTADDRESS CHAR(50)
-            );''')
-conn.execute(query)
-conn.close()
+class Membership(Base):
+    __tablename__ = 'CONTACT_INFORMATION'
+    memberid = Column(Integer, primary_key=True)
+    firstname = Column(String)
+    lastname = Column(String)
+    address = Column(String)
+    postnumber = Column(String)
+    postaddress = Column(String)
+    membershipfee = Column(Integer)
 
-# class Membership(Base):
-#     __tablename__ = 'membership'
-#     memberid = Column(Integer, primary_key=True)
-#     firstname = Column(String)
-#     lastname = Column(String)
-#     address = Column(String)
-#     postnumber = Column(Integer)
-#     postaddress = Column(String)
-#
-#
-# Base.metadata.create_all(engine)
+    def __init__(self, memberid, firstname, lastname, address, postnumber, postaddress, membershipfee):
+        super().__init__()
+        self.memberid = memberid
+        self.firstname = firstname
+        self.lastname = lastname
+        self.address = address
+        self.postnumber = postnumber
+        self.postaddress = postaddress
+        self.membershipfee = membershipfee
+
+
+engine = create_engine('sqlite:///contact_information.db')
+
+Base.metadata.create_all(engine)

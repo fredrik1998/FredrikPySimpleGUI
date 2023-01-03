@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
-import contact_information_window
+import membership_window
+from randomfile import ContactManager
 
 layout = [[sg.Button('Show Membership List'), sg.Exit()]]
 
@@ -10,4 +11,6 @@ while True:
     if event in (sg.WIN_CLOSED, 'Exit'):
         break
     elif event == 'Show Membership List':
-        contact_information_window.create()
+        membership_window.create()
+
+
