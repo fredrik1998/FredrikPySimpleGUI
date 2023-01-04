@@ -1,23 +1,22 @@
 from sqlite3 import IntegrityError
-import sqlite3
 import PySimpleGUI as sg
 import database_interface
 import validation
 
 
-def get_contact_records():
-    contact_records = database_interface.retrieve_contacts()
-    return contact_records
+def get_member_records():
+    member_records = database_interface.retrieve_member()
+    return member_records
 
 
 def create():
-    contact_records_array = get_contact_records()
+    member_records = get_member_records()
     headings = ['MemberID', 'First Name', 'Last Name', 'Address', 'Postnumber', 'Postaddress', 'Membership Fee']
-    contact_information_window_layout = [
+    member_window_layout = [
         [[sg.Text('Enter search:'), sg.InputText()],
          [sg.Button('Search')]],
         [sg.Button("Reset", key="reset")],
-        [sg.Table(values=contact_records_array, headings=headings, max_col_width=35,
+        [sg.Table(values=member_records, headings=headings, max_col_width=35,
                   auto_size_columns=True,
                   justification='right',
                   alternating_row_color='lightblue',
@@ -42,27 +41,27 @@ def create():
 
     ]
 
-    contact_information_window = sg.Window("Membership List Menu",
-                                           contact_information_window_layout, modal=True)
-    table = contact_information_window['-TABLE-']
+    member_window = sg.Window("Membership List Menu",
+                              member_window_layout, modal=True)
+    table = member_window['-TABLE-']
 
     def delete_row(row_index):
 
-        contact_records_array.pop(row_index)
+        member_records.pop(row_index)
 
-        table.update(contact_records_array)
+        table.update(member_records)
 
     def update_row(row_index, new_values):
-        contact_records_array[row_index] = new_values
-        table.update(contact_records_array)
+        member_records[row_index] = new_values
+        table.update(member_records)
 
     def display_table():
         rows = database_interface.get_all_rows()
         table.update(rows)
 
-    def search(search_query, contact_records_array):
+    def search(search_query, member_records):
         results = []
-        for row in contact_records_array:
+        for row in member_records:
             row = [str(x) for x in row]  # convert all values in row to strings
             search_query = str(search_query)  # convert search query to string
             if search_query in row:
@@ -72,7 +71,7 @@ def create():
         return results
 
     while True:
-        event, values = contact_information_window.read()
+        event, values = member_window.read()
         if event == "Exit" or event == sg.WIN_CLOSED:
             break
 
@@ -84,10 +83,10 @@ def create():
                 else:
                     membership_fee = "Not Payed"
                 try:
-                    database_interface.insert_contact(values['-MemberID-'], values['-FIRSTNAME-'], values['-LASTNAME-'],
-                                                      values['-ADDRESS-'],
-                                                      values['-POSTNUMBER-'], values['-POSTADDRESS-'],
-                                                      membership_fee)
+                    database_interface.insert_member(values['-MemberID-'], values['-FIRSTNAME-'], values['-LASTNAME-'],
+                                                     values['-ADDRESS-'],
+                                                     values['-POSTNUMBER-'], values['-POSTADDRESS-'],
+                                                     membership_fee)
                 except IntegrityError:
                     sg.popup("A member with that ID already exists")
                 else:
@@ -133,10 +132,10 @@ def create():
 
         if event == 'Search':
             search_query = values[0]
-            results = search(search_query, contact_records_array)
+            results = search(search_query, member_records)
             table.update(results)
 
         elif event == 'reset':
             display_table()
 
-    contact_information_window.close()
+    member_window.close()
