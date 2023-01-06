@@ -8,6 +8,7 @@ def search(search_query, member_records, table):
         search_query = str(search_query)  # convert search query to string
         if search_query in str(row[0]):  # check if search query is a substring of member id
             results.append(row)
+            break  # exit the loop once a match has been found
     if not results:
         # If search query is a member object, add it to the results
         if isinstance(search_query, database_interface.Membership):
