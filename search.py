@@ -1,13 +1,20 @@
 import PySimpleGUI as sg
+import database_interface
 
 
-def search(search_query, contact_records_array):
+def search(search_query, member_records, table):
     results = []
-    for row in contact_records_array:
-        row = [str(x) for x in row]  # convert all values in row to strings
+    for row in member_records:
         search_query = str(search_query)  # convert search query to string
-        if search_query in row:
+        if search_query in str(row[0]):  # check if search query is a substring of member id
             results.append(row)
     if not results:
-        sg.popup('No records found')
+        # If search query is a member object, add it to the results
+        if isinstance(search_query, database_interface.Membership):
+            results.append(
+                [search_query.memberid, search_query.firstname, search_query.lastname, search_query.address,
+                 search_query.postnumber, search_query.postaddress, search_query.membershipfee])
+        else:
+            sg.popup('Ingen medlem hittad')
+    table.update(results)  # update table with search results
     return results
