@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 import database_interface
 
-
+#Search function that allows user to search based of memberid
 def search(search_query, member_records, table):
     results = []
     for row in member_records:

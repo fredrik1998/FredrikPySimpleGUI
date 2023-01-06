@@ -4,9 +4,6 @@ def validate(values):
     values_invalid = []
 
     # Validates values so they cannot be empty
-    if len(values['-MemberID-']) == 0:
-        values_invalid.append('Medlems id måste fyllas i')
-        is_valid = False
 
     if len(values['-FIRSTNAME-']) == 0:
         values_invalid.append('Förnamn måste fyllas i')

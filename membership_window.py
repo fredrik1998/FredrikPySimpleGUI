@@ -24,7 +24,6 @@ def run():
                   key='-TABLE-',
                   row_height=35,
                   tooltip='Reservations Table')],
-        [sg.Text("Medlemsnummer:"), sg.Input(key='-MemberID-', size=(20, 1))],
         [sg.Text("Förnamn:"), sg.Input(key='-FIRSTNAME-', size=(20, 1))],
         [sg.Text("Efternamn:"), sg.Input(key='-LASTNAME-', size=(10, 1))],
         [sg.Text("Adress:"), sg.Input(key='-ADDRESS-', size=(10, 1))],
@@ -52,7 +51,17 @@ def run():
         table.update(member_records)
 
     def update_row(row_index, new_values):
+        # Retrieve the current member ID from the table
+        selected_row = member_records[row_index]
+        current_member_id = selected_row[0]
+
+        # Add the current member ID to the beginning of new_values
+        new_values = [current_member_id] + new_values
+
+        # Update member_records with the new values
         member_records[row_index] = new_values
+
+        # Update the values dictionary with the new values for the row
         table.update(member_records)
 
     def display_table():
@@ -73,11 +82,17 @@ def run():
                 else:
                     membership_fee = "Inte Betald"
                 # Call the modified insert_member function
-                insert_result = database_interface.insert_member(values['-MemberID-'], values['-FIRSTNAME-'],
-                                                                 values['-LASTNAME-'],
-                                                                 values['-ADDRESS-'],
-                                                                 values['-POSTNUMBER-'], values['-POSTADDRESS-'],
-                                                                 membership_fee, member_records)
+                new_member_id = database_interface.generate_new_member_id()
+
+                insert_result = database_interface.insert_member(memberid=new_member_id,
+                                                                 firstname=values['-FIRSTNAME-'],
+                                                                 lastname=values['-LASTNAME-'],
+                                                                 address=values['-ADDRESS-'],
+                                                                 postnumber=values['-POSTNUMBER-'],
+                                                                 postaddress=values['-POSTADDRESS-'],
+                                                                 membershipfee=membership_fee,
+                                                                 member_records=member_records)
+
                 if insert_result is None:
                     # If the insert_member function returned None, a member with the same ID already exists
                     sg.popup("En medlem med det ID finns redan")
@@ -113,26 +128,23 @@ def run():
                     else:
                         membership_fee = "Inte Betald"
                     row_index = values['-TABLE-'][0]
-                    new_values = [values['-MemberID-'], values['-FIRSTNAME-'], values['-LASTNAME-'],
-                                  values['-ADDRESS-'],
+                    new_values = [values['-FIRSTNAME-'], values['-LASTNAME-'], values['-ADDRESS-'],
                                   values['-POSTNUMBER-'],
-                                  values['-POSTNUMBER-'],
+                                  values['-POSTADDRESS-'],
                                   membership_fee]
                     update_row(row_index, new_values)
-                    # Call the modified update_member function
-                    update_result = database_interface.update_member(memberid=values['-MemberID-'],
-                                                                     firstname=values['-FIRSTNAME-'],
-                                                                     lastname=values['-LASTNAME-'],
-                                                                     address=values['-ADDRESS-'],
-                                                                     postnumber=values['-POSTNUMBER-'],
-                                                                     postaddress=values['-POSTADDRESS-'],
-                                                                     membershipfee=membership_fee)
-                    if update_result is None:
-                        # If the update_member function returned None, a member with the same ID already exists
-                        sg.popup("A member with that ID already exists")
-                    else:
-                        sg.popup('Uppdaterad')
-                        display_table()
+
+                    # Retrieve the current member ID from the table
+                    selected_row = member_records[row_index]
+                    current_member_id = selected_row[0]
+                    # Call the modified update_member function and pass the memberid as an argument
+                    database_interface.update_member(memberid=current_member_id,
+                                                     firstname=values['-FIRSTNAME-'],
+                                                     lastname=values['-LASTNAME-'],
+                                                     address=values['-ADDRESS-'],
+                                                     postnumber=values['-POSTNUMBER-'],
+                                                     postaddress=values['-POSTADDRESS-'],
+                                                     membershipfee=membership_fee)
                 else:
                     error_message = validation.generate_error_message(validation_result["values_invalid"])
                     sg.popup(error_message)

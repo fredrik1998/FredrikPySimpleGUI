@@ -2,6 +2,8 @@ import sqlite3
 from sqlalchemy.orm import sessionmaker
 from Table import engine
 from Table import Membership
+import PySimpleGUI as sg
+from sqlalchemy import func
 
 SessionFactory = sessionmaker(bind=engine)
 session = SessionFactory()
@@ -27,6 +29,18 @@ def insert_member(memberid, firstname, lastname, address, postnumber, postaddres
     return member  # Return the member object after the insert has been committed successfully
 
 
+def generate_new_member_id():
+    # Retrieve the current maximum member ID from the database
+    current_max_id = session.query(func.max(Membership.memberid)).scalar()
+    if current_max_id is None:
+        # If no members exist in the database, start the counter at 1
+        new_id = 1
+    else:
+        # Increment the current maximum member ID by 1 to get the new ID
+        new_id = current_max_id + 1
+    return new_id
+
+
 def delete_member(memberid):
     try:
         member = session.query(Membership).filter(Membership.memberid == memberid).one()
@@ -48,32 +62,27 @@ def get_all_rows():
 
 
 def update_member(memberid, firstname, lastname, address, postnumber, postaddress, membershipfee):
-    # Initialize the member variable with a default value of None
-    member = None
     try:
-        # Assign the member variable the value returned by the query
-        member = session.query(Membership).filter(Membership.memberid == memberid).one()
-        # Check if there is already a member with the new memberid value
-        existing_member = session.query(Membership).filter(Membership.memberid == memberid).one_or_none()
-        if existing_member is not None and existing_member.id != member.id:
-            # If there is already a member with the new memberid value, return None
-            return None
-        # Update the member values
-        member.firstname = firstname
-        member.lastname = lastname
-        member.address = address
-        member.postnumber = postnumber
-        member.postaddress = postaddress
-        member.membershipfee = membershipfee
+        # check if the memberid being updated is the same as the original memberid
+        original_member = session.query(Membership).filter(Membership.memberid == memberid).one()
+        if original_member.memberid != memberid:
+            raise ValueError("Cannot update MemberID")
+
+        # update all fields except memberid
+        original_member.firstname = firstname
+        original_member.lastname = lastname
+        original_member.address = address
+        original_member.postnumber = postnumber
+        original_member.postaddress = postaddress
+        original_member.membershipfee = membershipfee
 
         session.commit()
     except Exception as e:
         print(e)
+        sg.popup(str(e))  # display the error message
     finally:
         session.rollback()
         session.close()
-    return member
-
 
 
 def retrieve_member():
