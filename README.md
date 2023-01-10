@@ -1,6 +1,8 @@
 ﻿# FredrikPySimpleGUI
  
- ##This is a simple CRUD (CREATE, READ, UPDATE, DELETE) app for keeping record of members.
+ ## Description: 
+ 
+ This is a simple CRUD (CREATE, READ, UPDATE, DELETE) app for keeping record of members.
 
 ## Guide how to use the app:
 
