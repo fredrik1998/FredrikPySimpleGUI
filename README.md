@@ -17,7 +17,7 @@ Python: The programming language used.
 SQLAlchemy: Libary used to query the database using ORM (Object Relational Mapping).
 
 
-PySimpleGUI: Libary used for the GUI  Graphical User Interface).
+PySimpleGUI: Libary used for the GUI  (Graphical User Interface).
 
 
 ### Author:
